@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Bank</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header id="header">
+        <h1>My Bank</h1>
+        <nav>
+            <a href="/">Home</a>
+            <a href="/about">About Us</a>
+            <a href="/">Contact Us</a>
+        </nav>
+    </header>
+    <div id="banner">
+        <h2>Welcome to My Bank</h2>
+    </div>
+    <div id="main">
+        <h2>Secure and Reliable Banking</h2>
+        <p>At My Bank, we take your security and privacy seriously. Our online banking system is designed with the latest security features to ensure your peace of mind.</p>
+        <button class="button" onclick="location.href='/register'">Register Now</button>
+        <button class="button" onclick="location.href='/login'">Login</button>
+        <button class="button" onclick="location.href='/about'">Learn More About Us</button>
+    </div>
+    <div id="footer">
+        <p>&copy; 2023 My Bank</p>
+    </div>
+</body>
+</html>

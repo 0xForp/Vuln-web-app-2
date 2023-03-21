@@ -1,0 +1,190 @@
+/* Global styles */
+:root {
+  --primary-color: #0072c6;
+  --secondary-color: #ffffff;
+  --body-color: #333333;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--body-color);
+}
+
+a {
+  color: var(--primary-color);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+a:hover {
+  color: darken(var(--primary-color), 10%);
+}
+
+/* Header styles */
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--primary-color);
+  padding: 1rem;
+}
+
+.logo {
+  font-size: 2rem;
+  color: var(--secondary-color);
+}
+
+.nav-toggle {
+  display: none;
+  font-size: 2rem;
+  color: var(--secondary-color);
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.nav-toggle:hover {
+  color: darken(var(--secondary-color), 10%);
+}
+
+.nav-list {
+  display: flex;
+  gap: 1rem;
+  list-style: none;
+}
+
+.nav-item a {
+  padding: 1rem;
+  border-radius: 0.5rem;
+  transition: background-color 0.2s ease;
+}
+
+.nav-item a:hover {
+  background-color: var(--secondary-color);
+  color: var(--primary-color);
+}
+
+/* User profile styles */
+.user-profile {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 2rem 0;
+}
+
+.profile-picture {
+  width: 10rem;
+  height: 10rem;
+  object-fit: cover;
+  border-radius: 50%;
+  margin-right: 2rem;
+}
+
+.profile-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.profile-name {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.profile-email {
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+}
+
+/* Main content styles */
+main {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.section {
+  margin-bottom: 2rem;
+}
+
+.section-header {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.table {
+  border-collapse: collapse;
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+.table th,
+.table td {
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid var(--body-color);
+}
+
+.table th {
+  font-weight: bold;
+}
+
+.table td:last-child {
+  text-align: right;
+}
+
+.table a {
+  color: var(--primary-color);
+}
+
+.table a:hover {
+  color: darken(var(--primary-color), 10%);
+}
+
+/* Footer styles */
+footer {
+  background-color: var(--secondary-color);
+  padding: 1rem;
+  text-align: center;
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+}
+
+.footer-text {
+  font-size: 1.2rem;
+  color: var(--body-color);
+}
+
+.top-menu nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.top-menu li {
+  display: inline-block;
+  margin-right: 20px;
+}
+
+.top-menu li:last-child {
+  margin-right: 0;
+}
+
+.top-menu a {
+  display: inline-block;
+  color: #fff;
+  text-decoration: none;
+  padding: 10px;
+}

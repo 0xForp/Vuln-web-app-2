@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>User Profile - My Bank</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='profile.css') }}">
+</head>
+<body>
+	<header>
+        <div class="top-menu">
+            <div class="menu-btn">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <nav class="menu">
+                <ul class="menu-nav">
+                    <li class="nav-item"><a href="#">Home</a></li>
+                    <li class="nav-item"><a href="#">Accounts</a></li>
+                    <li class="nav-item"><a href="#">Transactions</a></li>
+                    <li class="nav-item"><a href="#">Payments</a></li>
+                    <li class="nav-item"><a href="#">Contact Us</a></li>
+                </ul>
+            </nav>
+        </div>
+		<div class="user-profile">
+			<img src="{{ url_for('static', filename='images/profile-placeholder.png') }}" alt="Profile Picture">
+			<p>Welcome, {{ user[1] }}!</p>
+		</div>
+	</header>
+	<main>
+		<h1>User Profile</h1>
+		<section class="account-summary">
+			<h2>Account Summary</h2>
+			<table>
+				<tr>
+					<th>{{ cc_number }}</th>
+					<th>Balance</th>
+					<th>Actions</th>
+				</tr>
+				{% for account in user.accounts %}
+				<tr>
+					<td>{{ cc_number }}</td>
+					<td><a href="#">View Transactions</a></td>
+				</tr>
+				{% endfor %}
+			</table>
+		</section>
+		<section class="personal-info">
+			<h2>Personal Information</h2>
+			<ul>
+				<li><strong>Name:</strong> {{ user[1] }}</li>
+				<li><strong>Email:</strong> {{ user[2] }}</li>
+				<li><strong>Address:</strong> {{ user.address }}</li>
+				<li><strong>Phone:</strong> {{ user.phone }}</li>
+			</ul>
+		</section>
+	</main>
+	<footer>
+		<p>&copy; 2023 My Bank. All rights reserved.</p>
+	</footer>
+    <script>
+        const menuBtn = document.querySelector('.menu-btn');
+        const menu = document.querySelector('.menu');
+        const menuNav = document.querySelector('.menu-nav');
+        const navItems = document.querySelectorAll('.nav-item');
+
+        let showMenu = false;
+
+        menuBtn.addEventListener('click', toggleMenu);
+
+        function toggleMenu() {
+            if (!showMenu) {
+                menuBtn.classList.add('close');
+                menu.classList.add('show');
+                menuNav.classList.add('show');
+                navItems.forEach(item => item.classList.add('show'));
+
+                showMenu = true;
+            } else {
+                menuBtn.classList.remove('close');
+                menu.classList.remove('show');
+                menuNav.classList.remove('show');
+                navItems.forEach(item => item.classList.remove('show'));
+
+                showMenu = false;
+            }
+        }
+    </script>
+</body>
+</html>
