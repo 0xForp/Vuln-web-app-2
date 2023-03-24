@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transactions</title>
+</head>
+<body>
+    <h1>Transactions</h1>
+    <form id="transaction-form">
+        <label for="sender_id">Sender ID:</label>
+        <input type="number" name="sender_id" id="sender_id" required>
+        <br>
+        <label for="recipient_id">Recipient ID:</label>
+        <input type="number" name="recipient_id" id="recipient_id" required>
+        <br>
+        <label for="amount">Amount:</label>
+        <input type="number" name="amount" id="amount" step="0.01" min="0" required>
+        <br>
+        <button type="submit">Submit</button>
+    </form>
+    <div id="response"></div>
+
+    <script>
+        document.getElementById('transaction-form').addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const sender_id = document.getElementById('sender_id').value;
+            const recipient_id = document.getElementById('recipient_id').value;
+            const amount = document.getElementById('amount').value;
+
+            const responseElement = document.getElementById('response');
+            responseElement.innerHTML = '';
+
+            try {
+                const response = await fetch('/api/transfer', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        sender_id: parseInt(sender_id),
+                        recipient_id: parseInt(recipient_id),
+                        amount: parseFloat(amount)
+                    })
+                });
+
+                const jsonResponse = await response.json();
+                responseElement.innerHTML = jsonResponse.message;
+
+                if (response.status === 200) {
+                    responseElement.style.color = 'green';
+                } else {
+                    responseElement.style.color = 'red';
+                }
+            } catch (error) {
+                responseElement.innerHTML = 'Error: ' + error.message;
+                responseElement.style.color = 'red';
+            }
+        });
+    </script>
+</body>
+</html>

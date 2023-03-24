@@ -1,9 +1,10 @@
-from flask import Flask, render_template, request, jsonify, redirect, url_for, session, flash
+from flask import Flask, render_template, request, jsonify, redirect, url_for, session, flash, make_response
 from flask_login import LoginManager
 from flask_login import UserMixin
 from flask_login import login_required
 import psycopg2
 from flask_sqlalchemy import SQLAlchemy
+from functools import wraps
 import random
 
 
@@ -15,7 +16,7 @@ app.config['SECRET_KEY'] = 'Sup3rS3cr3tk3y'
 
 
 # Create a connection to the PostgreSQL database
-conn = psycopg2.connect(
+db_connection_info = psycopg2.connect(
     host='127.0.0.1',
     user='postgres',
     password='201048',
@@ -39,10 +40,10 @@ def register():
         cc_number = str(random.randint(1000000000000000, 9999999999999999))
 
         # Insert the user data into the database
-        cursor = conn.cursor()
+        cursor = db_connection_info.cursor()
         query = "INSERT INTO users (name, email, password, cc_number) VALUES (%s, %s, %s, %s)"
         cursor.execute(query, (name, email, password, cc_number))
-        conn.commit()
+        db_connection_info.commit()
         cursor.close()
 
         # Return a success message to the client
@@ -57,7 +58,7 @@ def login():
         email = request.form['email']
         password = request.form['password']
 
-        cursor = conn.cursor()
+        cursor = db_connection_info.cursor()
         query = "SELECT * FROM users WHERE email = %s AND password = %s"
         cursor.execute(query, (email, password))
         user = cursor.fetchone()
@@ -98,7 +99,7 @@ def profile(user_id):
         return redirect(url_for('login'))
 
     # Fetch the user data from the database
-    cursor = conn.cursor()
+    cursor = db_connection_info.cursor()
     query = "SELECT * FROM users WHERE id = %s"
     cursor.execute(query, (user_id,))
     user = cursor.fetchone()
@@ -106,7 +107,7 @@ def profile(user_id):
 
     if user:
         # Retrieve the user's credit card number from the database
-        cursor = conn.cursor()
+        cursor = db_connection_info.cursor()
         query = "SELECT cc_number FROM users WHERE id = %s"
         cursor.execute(query, (user_id,))
         cc_number = cursor.fetchone()[0]
@@ -128,6 +129,47 @@ def about():
 @app.route('/contact')
 def contact():
     return render_template('contact.html')
+
+# Transaction page
+@app.route('/transactions')
+def transactions():
+    return render_template('transactions.html')
+
+@app.route('/api/transfer', methods=['POST'])
+def transfer():
+    data = request.get_json()
+    sender_id = data.get('sender_id')
+    recipient_id = data.get('recipient_id')
+    amount = data.get('amount')
+
+    if not all([sender_id, recipient_id, amount]):
+        return jsonify({'status': 'error', 'message': 'Missing required fields'}), 400
+
+    cursor = db_connection_info.cursor()
+
+    cursor.execute("SELECT balance FROM users WHERE id = %s", (sender_id,))
+    sender_balance = cursor.fetchone()[0]
+
+    if sender_balance < amount:
+        return jsonify({'status': 'error', 'message': 'Insufficient balance'}), 400
+
+    cursor.execute("SELECT balance FROM users WHERE id = %s", (recipient_id,))
+    recipient_balance = cursor.fetchone()[0]
+
+    new_sender_balance = sender_balance - amount
+    new_recipient_balance = recipient_balance + amount
+
+    cursor.execute("UPDATE users SET balance = %s WHERE id = %s", (new_sender_balance, sender_id))
+    cursor.execute("UPDATE users SET balance = %s WHERE id = %s", (new_recipient_balance, recipient_id))
+
+    query = "INSERT INTO transactions (sender_id, recipient_id, amount) VALUES (%s, %s, %s)"
+    cursor.execute(query, (sender_id, recipient_id, amount))
+
+    db_connection_info.commit()
+    cursor.close()
+
+    return jsonify({'status': 'success', 'message': 'Transfer successful'})
+
 
 if __name__ == '__main__':
     app.run(debug=True)

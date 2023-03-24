@@ -99,3 +99,24 @@ body {
     font-size: 14px;
     color: #666666;
 }
+
+.footer-links {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+}
+
+.footer-links li {
+    margin-right: 1rem;
+}
+
+.footer-links li:last-child {
+    margin-right: 0;
+}
+
+.footer-links a {
+    text-decoration: none;
+    color: inherit;
+}
