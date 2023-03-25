@@ -5,22 +5,164 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Transactions</title>
+
+    <style>
+   body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+    color: #333333;
+}
+#header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #0072c6;
+    padding: 10px;
+}
+#header h1 {
+    margin: 0;
+    font-size: 28px;
+    color: #ffffff;
+}
+#header nav {
+    display: flex;
+    gap: 10px;
+}
+#header a {
+    text-decoration: none;
+    color: #ffffff;
+    padding: 10px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+#header a:hover {
+    background-color: #ffffff;
+    color: #0072c6;
+}
+#banner {
+    background-image: url('https://cdn.pixabay.com/photo/2017/09/07/08/54/money-2724244_1280.jpg');
+    background-size: cover;
+    background-position: center;
+    height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #ffffff;
+    text-align: center;
+}
+#banner h2 {
+    margin: 0;
+    font-size: 48px;
+    text-shadow: 2px 2px #000000;
+}
+#main {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+#main form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+#main label {
+    font-weight: bold;
+}
+#main input[type="text"],
+#main input[type="email"],
+#main input[type="password"],
+#main textarea {
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    box-shadow: 1px 1px 5px rgba(0,0,0,0.2);
+}
+#main textarea {
+    height: 100px;
+}
+.button {
+    background-color: #0072c6;
+    color: #ffffff;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+.button:hover {
+    background-color: #ffffff;
+    color: #0072c6;
+}
+#footer {
+    background-color: #e6e6e6;
+    padding: 10px;
+    text-align: center;
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+}
+#footer p {
+    margin: 0;
+    font-size: 14px;
+    color: #666666;
+}
+
+.footer-links {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+}
+
+.footer-links li {
+    margin-right: 1rem;
+}
+
+.footer-links li:last-child {
+    margin-right: 0;
+}
+
+.footer-links a {
+    text-decoration: none;
+    color: inherit;
+}
+
+    </style>
 </head>
 <body>
-    <h1>Transactions</h1>
-    <form id="transaction-form">
-        <label for="sender_id">Sender ID:</label>
-        <input type="number" name="sender_id" id="sender_id" required>
-        <br>
-        <label for="recipient_id">Recipient ID:</label>
-        <input type="number" name="recipient_id" id="recipient_id" required>
-        <br>
-        <label for="amount">Amount:</label>
-        <input type="number" name="amount" id="amount" step="0.01" min="0" required>
-        <br>
-        <button type="submit">Submit</button>
-    </form>
-    <div id="response"></div>
+    <div id="header">
+        <h1>Bank App</h1>
+        <nav>
+            <a href="/">Home</a>
+            <a href="/profile">Profile</a>
+            <a href="/transactions">Transactions</a>
+            <a href="/logout">Logout</a>
+        </nav>
+    </div>
+    <div id="banner">
+        <h2>Transactions</h2>
+    </div>
+    <div id="main">
+        <form id="transaction-form">
+            <label for="sender_id">Sender ID:</label>
+            <input type="number" name="sender_id" id="sender_id" value="{{ user_id }}" readonly required>
+            <br>
+            <label for="recipient_id">Recipient ID:</label>
+            <input type="number" name="recipient_id" id="recipient_id" required>
+            <br>
+            <label for="amount">Amount:</label>
+            <input type="number" name="amount" id="amount" step="0.01" min="0" required>
+            <br>
+            <button type="submit" class="button">Submit</button>
+        </form>
+        <div id="response"></div>
+    </div>
+    <div id="footer">
+        <p>Bank App &copy; 2023. All rights reserved.</p>
+    </div>
 
     <script>
         document.getElementById('transaction-form').addEventListener('submit', async (event) => {

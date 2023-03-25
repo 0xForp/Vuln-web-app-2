@@ -188,3 +188,20 @@ footer {
   text-decoration: none;
   padding: 10px;
 }
+
+.credit-card {
+  width: 300px;
+  height: 180px;
+  background-color: #3b3b3b;
+  border-radius: 10px;
+  padding: 20px;
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.card-number {
+  font-size: 20px;
+  letter-spacing: 4px;
+}

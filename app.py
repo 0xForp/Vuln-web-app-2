@@ -7,13 +7,10 @@ from flask_sqlalchemy import SQLAlchemy
 from functools import wraps
 import random
 
-
 app = Flask(__name__)
 app.config['SESSION_TYPE'] = 'filesystem'
 app.secret_key = 'mysecretkey'
 app.config['SECRET_KEY'] = 'Sup3rS3cr3tk3y'
-
-
 
 # Create a connection to the PostgreSQL database
 db_connection_info = psycopg2.connect(
@@ -22,6 +19,26 @@ db_connection_info = psycopg2.connect(
     password='201048',
     database='postgres'
 )
+
+# Initialize LoginManager
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'login'
+
+@login_manager.user_loader
+def load_user(user_id):
+    cursor = db_connection_info.cursor()
+    query = "SELECT * FROM users WHERE id = %s"
+    cursor.execute(query, (user_id,))
+    user = cursor.fetchone()
+    cursor.close()
+    
+    if user:
+        user_obj = UserMixin()
+        user_obj.id = user[0]
+        return user_obj
+    else:
+        return None
 
 # Home page
 @app.route('/')
@@ -133,7 +150,26 @@ def contact():
 # Transaction page
 @app.route('/transactions')
 def transactions():
-    return render_template('transactions.html')
+    if 'user_id' not in session:  
+        return redirect(url_for('login'))
+    return render_template('transactions.html', user_id=session['user_id'])  
+
+@app.route('/user_transactions')
+def user_transactions():
+    if 'user_id' not in session:
+        flash('Please log in to access this page')
+        return redirect(url_for('login'))
+    user_id = session['user_id']
+    
+    # Fetch user transactions from the database
+    cursor = db_connection_info.cursor()
+    query = "SELECT * FROM transactions WHERE sender_id = %s OR recipient_id = %s ORDER BY date DESC"
+    cursor.execute(query, (user_id, user_id))
+    transactions = cursor.fetchall()
+    cursor.close()
+    
+    return render_template('user_transactions.html', transactions=transactions)
+
 
 @app.route('/api/transfer', methods=['POST'])
 def transfer():
