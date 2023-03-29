@@ -5,49 +5,14 @@
 	<title>User Profile - My Bank</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='profile.css') }}">
     <style>
-        .credit-card {
-    background-color: #2b2e34;
-    border-radius: 10px;
-    padding: 20px;
-    max-width: 400px;
-    margin: 20px auto;
-    color: #ffffff;
-    position: relative;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
-}
-
-.credit-card .card-logo {
-    display: flex;
-    justify-content: flex-end;
-}
-
-.credit-card .card-logo img {
-    max-width: 60px;
-    height: auto;
-}
-
-.credit-card .card-number {
-    font-size: 24px;
-    letter-spacing: 2px;
-    display: flex;
-    justify-content: center;
-    margin-top: 20px;
-}
-
-.credit-card .card-holder {
-    font-size: 14px;
-    margin-top: 20px;
-    display: flex;
-    justify-content: space-between;
-}
-
-.credit-card .card-holder span {
-    letter-spacing: 1px;
-}
+    
 
     </style>
 </head>
+
 <body>
+        <div class="container">
+
 	<header>
         <div class="top-menu">
             <div class="menu-btn">
@@ -57,8 +22,7 @@
             </div>
             <nav class="menu">
                 <ul class="menu-nav">
-                    <li class="nav-item"><a href="{{ url_for('home') }}">Home</a></li>
-                    <li class="nav-item"><a href="{{ url_for('profile', user_id=user[0]) }}">Accounts</a></li>
+                    <li class="nav-item"><a href="{{ url_for('profile', user_id=user[0]) }}">Home</a></li>
                     <li class="nav-item"><a href="{{ url_for('transactions') }}">Transactions</a></li>
                     <li class="nav-item"><a href="#">Payments</a></li>
                     <li class="nav-item"><a href="{{ url_for('contact') }}">Contact Us</a></li>
@@ -76,9 +40,11 @@
 		</div>
 	</header>
 	<main>
-		<h1>My account</h1>
+		<h1>Welcome, {{ user[1] }}</h1>
 		<section class="account-summary">
             <h2>Account Summary</h2>
+            <div class="main-content">
+
             <div class="credit-card">
                 <div class="card-number">
                     {{ cc_number[:4] }} {{ cc_number[4:8] }} {{ cc_number[8:12] }} {{ cc_number[12:16] }}
@@ -95,47 +61,36 @@
                 <tr>
                   
                     <th>Balance: {{ user[6] }}</th>
-                </tr>
-                {% for account in user.accounts %}
-                <tr>
-                    <td>{{ cc_number }}</td>
-                    <td><a href="#">View Transactions</a></td>
-                </tr>
-                {% endfor %}
-            </table>
-        </section>
+                    <section class="last-transactions">
+                        <h2>Last Transactions</h2>
+                        <table>
+                            <tr>
+                                <th>Date</th>
+                                <th>Description</th>
+                                <th>Amount</th>
+                            </tr>
+                            {% for transaction in last_transactions %}
+                            <tr>
+                                <td>{{ transaction[5].strftime('%Y-%m-%d') }}</td>
+                                <td>
+                                    {% if transaction[1] == user[0] %}
+                                    Sent to user {{ transaction[2] }}
+                                    {% else %}
+                                    Received from user {{ transaction[1] }}
+                                    {% endif %}
+                                </td>
+                                <td>{{ transaction[3] }}</td>
+
+                            </tr>
+                            {% endfor %}
+                        </table>
+                    </section>
+                </div>
         
 	</main>
 	<footer>
 		<p>&copy; 2023 My Bank. All rights reserved.</p>
 	</footer>
-    <script>
-        const menuBtn = document.querySelector('.menu-btn');
-        const menu = document.querySelector('.menu');
-        const menuNav = document.querySelector('.menu-nav');
-        const navItems = document.querySelectorAll('.nav-item');
-
-        let showMenu = false;
-
-        menuBtn.addEventListener('click', toggleMenu);
-
-        function toggleMenu() {
-            if (!showMenu) {
-                menuBtn.classList.add('close');
-                menu.classList.add('show');
-                menuNav.classList.add('show');
-                navItems.forEach(item => item.classList.add('show'));
-
-                showMenu = true;
-            } else {
-                menuBtn.classList.remove('close');
-                menu.classList.remove('show');
-                menuNav.classList.remove('show');
-                navItems.forEach(item => item.classList.remove('show'));
-
-                showMenu = false;
-            }
-        }
-    </script>
+    
 </body>
 </html>

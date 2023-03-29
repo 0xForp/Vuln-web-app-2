@@ -9,8 +9,8 @@ import random
 
 app = Flask(__name__)
 app.config['SESSION_TYPE'] = 'filesystem'
-app.secret_key = 'mysecretkey'
-app.config['SECRET_KEY'] = 'Sup3rS3cr3tk3y'
+app.secret_key = '1234'
+app.config['SECRET_KEY'] = '1234'
 
 # Create a connection to the PostgreSQL database
 db_connection_info = psycopg2.connect(
@@ -122,16 +122,31 @@ def profile(user_id):
     user = cursor.fetchone()
     cursor.close()
 
+    # Fetch the last transactions for the user
+    cursor = db_connection_info.cursor()
+    query = "SELECT * FROM transactions WHERE sender_id = %s OR recipient_id = %s ORDER BY date DESC LIMIT 5"
+    cursor.execute(query, (user_id, user_id))
+    last_transactions = cursor.fetchall()
+    cursor.close()
+
     if user:
         # Retrieve the user's credit card number from the database
         cursor = db_connection_info.cursor()
         query = "SELECT cc_number FROM users WHERE id = %s"
         cursor.execute(query, (user_id,))
         cc_number = cursor.fetchone()[0]
+
+        # Fetch the last 5 transactions for the user
+        query = """
+        SELECT * FROM transactions WHERE sender_id = %s OR recipient_id = %s
+        ORDER BY date DESC LIMIT 5
+        """
+        cursor.execute(query, (user_id, user_id))
+        last_transactions = cursor.fetchall()
         cursor.close()
 
-        # Render the profile page with the user's data and credit card number
-        return render_template('profile.html', user=user, cc_number=cc_number)
+        # Render the profile page with the user's data, credit card number, and last transactions
+        return render_template('profile.html', user=user, cc_number=cc_number, last_transactions=last_transactions)
     else:
         # Redirect to the login page
         flash('Please log in to access this page')
@@ -167,6 +182,7 @@ def user_transactions():
     cursor.execute(query, (user_id, user_id))
     transactions = cursor.fetchall()
     cursor.close()
+    
     
     return render_template('user_transactions.html', transactions=transactions)
 
@@ -208,4 +224,4 @@ def transfer():
 
 
 if __name__ == '__main__':
-    app.run(host="192.168.190.128", port=5001)
+    app.run(debug=True, host="192.168.190.128", port=5000)
