@@ -54,7 +54,7 @@ def serve_git_folder(filename=''):
 
     # If no filename is given, generate directory listing
     file_list = os.listdir(git_folder)
-    files = [{'name': f, 'path': 'static-git/{}'.format(f)} for f in file_list]
+    files = [{'name': f, 'path': '{}'.format(f)} for f in file_list]
 
     template = '''
     <html>
