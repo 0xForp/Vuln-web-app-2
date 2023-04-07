@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>.git Directory</title>
+</head>
+<body>
+    <h1>.git Directory Contents</h1>
+    <ul>
+    {% for file in contents %}
+        <li>{{ file }}</li>
+    {% endfor %}
+    </ul>
+</body>
+</html>

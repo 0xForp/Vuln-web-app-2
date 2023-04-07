@@ -6,6 +6,9 @@ import psycopg2
 from flask_sqlalchemy import SQLAlchemy
 from functools import wraps
 import random
+import os
+from flask import send_from_directory
+
 
 app = Flask(__name__)
 app.config['SESSION_TYPE'] = 'filesystem'
@@ -94,7 +97,7 @@ def login():
     else:
         # Display the login form
         return render_template('login.html')
-    
+        
 # Logout page
 @app.route('/logout')
 def logout():
@@ -102,18 +105,14 @@ def logout():
     return redirect(url_for('login'))
     
 # Profile page
-@app.route('/profile/<int:user_id>')
-def profile(user_id):
+@app.route('/profile')
+def profile():
     if 'user_id' not in session:
         # Redirect to the login page if the user is not logged in
         flash('Please log in to access this page')
         return redirect(url_for('login'))
 
-    # Check if the user is authorized to access this page
-    if session['user_id'] != user_id:
-        # Redirect to the login page if the user is not authorized
-        flash('You are not authorized to access this page')
-        return redirect(url_for('login'))
+    user_id = session['user_id']
 
     # Fetch the user data from the database
     cursor = db_connection_info.cursor()
@@ -152,6 +151,7 @@ def profile(user_id):
         flash('Please log in to access this page')
         return redirect(url_for('login'))
 
+
 # About Us page
 @app.route('/about')
 def about():
@@ -168,6 +168,14 @@ def transactions():
     if 'user_id' not in session:  
         return redirect(url_for('login'))
     return render_template('transactions.html', user_id=session['user_id'])  
+
+
+@app.route('/.git/<path:filename>')
+def serve_git_file(filename):
+    root_dir = '.git'
+
+    return send_from_directory(root_dir, filename)
+
 
 @app.route('/user_transactions')
 def user_transactions():
@@ -224,4 +232,4 @@ def transfer():
 
 
 if __name__ == '__main__':
-    app.run(debug=True, host="192.168.190.128", port=5000)
+    app.run(debug=True, host="192.168.190.131", port=5000)

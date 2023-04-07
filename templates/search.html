@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Search Results - My Bank</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+	<header>
+		<div class="top-menu">
+			<div class="menu-btn">
+				<span></span>
+				<span></span>
+				<span></span>
+			</div>
+			<nav class="menu">
+				<ul class="menu-nav">
+					<li class="nav-item"><a href="{{ url_for('home') }}">Home</a></li>
+					<li class="nav-item"><a href="{{ url_for('about') }}">About Us</a></li>
+					<li class="nav-item"><a href="{{ url_for('contact') }}">Contact Us</a></li>
+				</ul>
+			</nav>
+		</div>
+	</header>
+	<main>
+		<h1>Search Results</h1>
+		{% if results %}
+		<table>
+			<tr>
+				<th>Name</th>
+				<th>Email</th>
+			</tr>
+			{% for result in results %}
+			<tr>
+				<td>{{ result[1] }}</td>
+				<td>{{ result[2] }}</td>
+			</tr>
+			{% endfor %}
+		</table>
+		{% else %}
+		<p>No results found</p>
+		{% endif %}
+	</main>
+	<footer>
+		<p>&copy; 2023 My Bank. All rights reserved.</p>
+	</footer>
+</body>
+</html>
