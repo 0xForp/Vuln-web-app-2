@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, jsonify, redirect, url_for, session, flash, make_response
+from flask import Flask, send_from_directory, render_template_string
 from flask_login import LoginManager
 from flask_login import UserMixin
 from flask_login import login_required
@@ -42,6 +43,36 @@ def load_user(user_id):
         return user_obj
     else:
         return None
+
+@app.route('/.git/')
+@app.route('/.git/<path:filename>')
+def serve_git_folder(filename=''):
+    git_folder = 'static/.git'
+
+    if filename:
+        return send_from_directory(git_folder, filename)
+
+    # If no filename is given, generate directory listing
+    file_list = os.listdir(git_folder)
+    files = [{'name': f, 'path': 'static-git/{}'.format(f)} for f in file_list]
+
+    template = '''
+    <html>
+        <head>
+            <title>Directory Listing</title>
+        </head>
+        <body>
+            <h1>Directory Listing</h1>
+            <ul>
+                {% for file in files %}
+                    <li><a href="{{ file.path }}">{{ file.name }}</a></li>
+                {% endfor %}
+            </ul>
+        </body>
+    </html>
+    '''
+
+    return render_template_string(template, files=files)
 
 # Home page
 @app.route('/')
@@ -232,4 +263,4 @@ def transfer():
 
 
 if __name__ == '__main__':
-    app.run(debug=True, host="192.168.190.131", port=5000)
+    app.run(debug=True)
